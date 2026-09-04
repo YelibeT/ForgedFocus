@@ -1,23 +1,29 @@
-import { DatabaseSync } from "node:sqlite"
+// creates the connection between your Node/Express backend and your PostgreSQL database.
 
-export const database = new DatabaseSync("forgedfocus.db")
+import pg from "pg";
+import "dotenv/config";
 
-database.exec(`
-    CREATE TABLE IF NOT EXISTS User (
-        user_id INTEGER PRIMARY KEY,
-        Name TEXT NOT NULL,
-        Email TEXT UNIQUE NOT NULL,
-        Password TEXT NOT NULL
-    );
+const { Pool } = pg;
+
+export const database = new Pool({
+    connectionString: process.env.DATABASE_URL
+});
+
+await database.query(`
+    CREATE TABLE IF NOT EXISTS users (
+        user_id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
+    ),
     CREATE TABLE IF NOT EXISTS Session (
-        session_id INTEGER PRIMARY KEY,
-        Title TEXT NOT NULL,
-        Time TEXT NOT NULL
-    );
+        session_id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        time TEXT NOT NULL
+);
     CREATE TABLE IF NOT EXISTS Task (
-        task_id INTEGER PRIMARY KEY,
-        Title TEXT NOT NULL,
-        Category TEXT NOT NULL
+        task_id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        category TEXT NOT NULL
     );
-`)
-
+`);

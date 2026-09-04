@@ -3,11 +3,36 @@ import { ArrowRight, Code2, Eye, EyeOff, Flame, ShieldCheck } from 'lucide-react
 
 function CreateAccount() {
   const [showPassword, setShowPassword] = useState(false)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    setMessage('Your account is ready to be created.')
+    setMessage('Creating your account...')
+
+    try {
+      const response = await fetch('http://localhost:8800/users/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setMessage(data.message || 'Account creation failed.')
+        return
+      }
+
+      window.location.assign('/dashboard')
+    } catch (error) {
+      console.error(error)
+      setMessage('Unable to connect to the server.')
+    }
   }
 
   return (
@@ -24,11 +49,11 @@ function CreateAccount() {
           <div className="signin-heading"><p className="eyebrow">GET STARTED</p><h2 id="create-account-title">Create your account</h2><p>Set up your personal focus space.</p></div>
           <form onSubmit={handleSubmit}>
             <label htmlFor="name">Your name</label>
-            <input id="name" type="text" placeholder="Alex Kim" autoComplete="name" required />
+            <input id="name" type="text" value={name} onChange={(event) => setName(event.target.value)} placeholder="Alex Kim" autoComplete="name" required />
             <label htmlFor="create-email" className="create-label">Email address</label>
-            <input id="create-email" type="email" placeholder="you@example.com" autoComplete="email" required />
+            <input id="create-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="you@example.com" autoComplete="email" required />
             <label htmlFor="create-password" className="create-label">Password</label>
-            <div className="password-input"><input id="create-password" type={showPassword ? 'text' : 'password'} placeholder="At least 8 characters" autoComplete="new-password" minLength="8" required /><button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((value) => !value)}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>
+            <div className="password-input"><input id="create-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(event) => setPassword(event.target.value)} placeholder="At least 8 characters" autoComplete="new-password" minLength="8" required /><button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((value) => !value)}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button></div>
             <button className="signin-submit" type="submit">Create account <ArrowRight size={16} /></button>
             {message && <p className="signin-message" role="status">{message}</p>}
           </form>
