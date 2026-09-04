@@ -20,10 +20,10 @@ await database.query(`
         session_id SERIAL PRIMARY KEY,
         title TEXT NOT NULL,
         time TEXT NOT NULL
-);
+),
     CREATE TABLE IF NOT EXISTS Task (
         task_id SERIAL PRIMARY KEY,
         title TEXT NOT NULL,
         category TEXT NOT NULL
-    );
+    )
 `);
