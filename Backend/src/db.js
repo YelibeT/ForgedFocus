@@ -16,11 +16,14 @@ await database.query("SELECT 1");
 await database.query(`
     CREATE TABLE IF NOT EXISTS users (
         user_id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
         password TEXT NOT NULL,
+        email_verified BOOLEAN DEFAULT FALSE,
+        verification_token TEXT,
+        verification_expires TIMESTAMP,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
+    );
 `);
 
 await database.query(`
