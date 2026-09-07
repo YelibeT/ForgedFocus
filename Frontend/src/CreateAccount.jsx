@@ -7,8 +7,10 @@ import {
   Flame,
   ShieldCheck,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function CreateAccount() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -22,7 +24,7 @@ function CreateAccount() {
     try {
       const response = await fetch(
         "http://localhost:8800/users/",
-        "https://forged-focus-y3tf.vercel.app/",
+        
          {
         method: "POST",
         headers: {
@@ -38,7 +40,7 @@ function CreateAccount() {
         return;
       }
 
-      window.location.assign("/dashboard");
+      navigate("/dashboard");
     } catch (error) {
       console.error(error);
       setMessage("Unable to connect to the server.");
@@ -158,7 +160,7 @@ function CreateAccount() {
             <button
               type="button"
               onClick={() => {
-                window.location.href = "/signin";
+                navigate("/signin");
               }}
             >
               Sign in

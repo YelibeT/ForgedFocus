@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   BarChart3,
   Bell,
@@ -66,10 +67,10 @@ const activities = [
 ];
 
 const navItems = [
-  { label: "Overview", icon: LayoutDashboard },
-  { label: "Focus sessions", icon: TimerReset },
-  { label: "Insights", icon: BarChart3 },
-  { label: "Tasks", icon: ListTodo, count: 4 },
+  { label: "Overview", icon: LayoutDashboard, path: "" },
+  { label: "Focus sessions", icon: TimerReset, path: "focus" },
+  { label: "Insights", icon: BarChart3, path: "insights" },
+  { label: "Tasks", icon: ListTodo, path: "tasks", count: 4 },
 ];
 
 const initialTasks = [
@@ -146,12 +147,23 @@ const calendarDays = [
 ];
 
 function Dashboard() {
-  const [activeNav, setActiveNav] = useState("Overview");
+  const location = useLocation();
+  const navigate = useNavigate();
   const [isRunning, setIsRunning] = useState(false);
   const [seconds, setSeconds] = useState(25 * 60);
   const [toast, setToast] = useState("");
   const [tasks, setTasks] = useState(initialTasks);
   const [selectedDay, setSelectedDay] = useState(21);
+
+  const activePath = location.pathname.replace(/\/$/, "") || "/dashboard";
+  const activeNav = {
+    "/dashboard": "Overview",
+    "/dashboard/focus": "Focus sessions",
+    "/dashboard/insights": "Insights",
+    "/dashboard/tasks": "Tasks",
+    "/dashboard/calendar": "Calendar",
+    "/dashboard/settings": "Settings",
+  }[activePath] || "Overview";
 
   useEffect(() => {
     if (!isRunning) return undefined;
@@ -564,7 +576,7 @@ function Dashboard() {
 
           <button
             className="secondary-button"
-            onClick={() => setActiveNav("Focus sessions")}
+            onClick={() => navigate("/dashboard/focus")}
           >
             View details
           </button>
@@ -705,7 +717,7 @@ function Dashboard() {
                 className={`nav-item ${
                   activeNav === item.label ? "active" : ""
                 }`}
-                onClick={() => setActiveNav(item.label)}
+                onClick={() => navigate(item.path ? `/dashboard/${item.path}` : "/dashboard")}
               >
                 <Icon size={17} />
                 <span>{item.label}</span>
@@ -725,7 +737,7 @@ function Dashboard() {
             className={`nav-item ${
               activeNav === "Calendar" ? "active" : ""
             }`}
-            onClick={() => setActiveNav("Calendar")}
+            onClick={() => navigate("/dashboard/calendar")}
           >
             <CalendarDays size={17} />
             <span>Calendar</span>
@@ -735,7 +747,7 @@ function Dashboard() {
             className={`nav-item ${
               activeNav === "Settings" ? "active" : ""
             }`}
-            onClick={() => setActiveNav("Settings")}
+            onClick={() => navigate("/dashboard/settings")}
           >
             <Settings size={17} />
             <span>Settings</span>

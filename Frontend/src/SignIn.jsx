@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { ArrowRight, Code2, Eye, EyeOff, Flame, ShieldCheck } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 function SignIn() {
+  const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -32,7 +34,7 @@ function SignIn() {
       }
 
       setMessage('Welcome back. Preparing your workspace...')
-      window.location.assign('/dashboard')
+      navigate('/dashboard')
     } catch (error) {
       console.error(error)
       setMessage('Unable to connect to the server.')
@@ -175,7 +177,7 @@ function SignIn() {
             <button
               type="button"
               onClick={() => {
-                window.location.href = '/create-account'
+                navigate('/create-account')
               }}
             >
               Create an account
